@@ -1,0 +1,51 @@
+ticker,initial_rows,issues,final_rows,status
+a.us,4521,[],4521.0,OK
+aa.us,12074,[],12074.0,OK
+aaap.us,505,[],505.0,OK
+aaba.us,5434,[],5434.0,OK
+aac.us,785,['1 extreme returns (>50%)'],785.0,OK
+aal.us,989,[],989.0,OK
+aamc.us,1211,['2 extreme returns (>50%)'],1211.0,OK
+aame.us,2926,[],2926.0,OK
+aan.us,3201,[],3201.0,OK
+aaoi.us,1041,[],1041.0,OK
+aaon.us,3201,[],3201.0,OK
+aap.us,3201,[],3201.0,OK
+aapl.us,8364,['1 extreme returns (>50%)'],8364.0,OK
+aat.us,1717,[],1717.0,OK
+aau.us,3177,[],3177.0,OK
+aav.us,3199,[],3199.0,OK
+aaww.us,3162,[],3162.0,OK
+aaxn.us,3201,[],3201.0,OK
+ab.us,3201,[],3201.0,OK
+abac.us,1827,[],1827.0,OK
+abax.us,3201,[],3201.0,OK
+abb.us,3201,[],3201.0,OK
+abbv.us,1224,[],1224.0,OK
+abc.us,5691,[],5691.0,OK
+abcb.us,3201,[],3201.0,OK
+abcd.us,1970,[],1970.0,OK
+abco.us,3201,[],3201.0,OK
+abdc.us,885,[],885.0,OK
+abe.us,3190,[],3190.0,OK
+abeo.us,729,['1 extreme returns (>50%)'],729.0,OK
+abeow.us,515,['5 extreme returns (>50%)'],515.0,OK
+abev.us,2519,[],2519.0,OK
+abg.us,3201,[],3201.0,OK
+abil.us,470,"['1 extreme returns (>50%)', 'Only 470 trading days (min: 500)']",,
+abio.us,3201,['5 extreme returns (>50%)'],3201.0,OK
+ablx.us,13,['Only 13 trading days (min: 500)'],,
+abm.us,3201,[],3201.0,OK
+abmd.us,3199,[],3199.0,OK
+abr.us,3201,[],3201.0,OK
+abr_a.us,1144,[],1144.0,OK
+abr_b.us,1042,[],1042.0,OK
+abr_c.us,832,[],832.0,OK
+abrn.us,875,[],875.0,OK
+abt.us,8726,[],8726.0,OK
+abtx.us,529,[],529.0,OK
+abus.us,2449,['1 extreme returns (>50%)'],2449.0,OK
+abx.us,8255,[],8255.0,OK
+aby.us,862,[],862.0,OK
+ac.us,491,['Only 491 trading days (min: 500)'],,
+acad.us,3200,['6 extreme returns (>50%)'],3200.0,OK
