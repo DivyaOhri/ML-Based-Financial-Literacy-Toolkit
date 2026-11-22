@@ -25,3 +25,6 @@ results/models/*.joblib
 
 # Logs
 *.log
+data/raw/
+venv/
+*.pkl
