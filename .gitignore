@@ -28,3 +28,9 @@ results/models/*.joblib
 data/raw/
 venv/
 *.pkl
+
+__pycache__/
+.vscode/
+venv/
+*.pkl
+data/raw/
