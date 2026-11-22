@@ -1,4 +1,4 @@
-"""
+﻿"""
 Data Loader: Download and load Kaggle stock market dataset
 """
 
@@ -56,7 +56,7 @@ def load_csv_files(limit=None):
     
     csv_files = sorted(stocks_dir.glob('*.txt'))
     if limit:
-        csv_files = csv_files[:limit]
+        import random; random.seed(42); csv_files = random.sample(csv_files, min(limit, len(csv_files)))
     
     print(f"Loading {len(csv_files)} CSV files...")
     
@@ -111,7 +111,7 @@ def inspect_raw_data(stock_data):
 
 if __name__ == '__main__':
     print("Loading stock data...")
-    stock_data = load_csv_files(limit=50)  # Start with 50 for testing
+    stock_data = load_csv_files(limit=500)  # Start with 50 for testing
     
     inspect_raw_data(stock_data)
     
