@@ -1,71 +1,98 @@
-# ML-Based Financial Literacy Toolkit (Stock Market Core)
+# ML-Based Financial Literacy Toolkit
 
-## Project Overview
+An educational toolkit that uses **classical machine learning** on historical US stock prices to teach beginners how market patterns and risk work, and uses **SHAP** to explain what the models learned. It is a learning tool, not a trading system or investment advice.
 
-A classical machine learning system that teaches beginners to recognize stock market patterns and risk profiles using interpretable models and SHAP explainability.
+## What it does
 
-**Timeline:** 1 month | **Tech Stack:** Random Forest, XGBoost, K-Means + SHAP
+| Component | Method | Output |
+|---|---|---|
+| Pattern classifier | Random Forest, Gradient Boosting | Labels each day as **Bullish / Bearish / Neutral / Consolidation** based on the next 5 trading days |
+| Risk tiers | K-Means (k = 3) | Groups stocks into **Low / Medium / High risk** by volatility, momentum, RSI and volume |
+| Explainability | SHAP (TreeExplainer) | Ranks which indicators drive the predictions |
 
-### Phase 1 (CORE): Stock Market Pattern & Risk Literacy
-- **1a. Pattern Classification**: Classify market patterns (bullish/bearish/neutral/consolidation)
-- **1b. Risk Clustering**: Segment stocks into risk tiers (stable/moderate/high-volatility)
-- **1c. Similar-Stock Finder** (optional): k-NN based recommendation
+## Data
 
-## Quick Start
+[Kaggle: Huge Stock Market Dataset](https://www.kaggle.com/datasets/borismarjanovic/price-volume-data-for-all-us-stocks-etfs) (daily OHLCV, US stocks and ETFs, up to Nov 2017).
 
-```bash
-cd ml-financial-literacy-toolkit
+500 stock files are sampled at random (seed 42); 498 load, and 394 stocks with at least 500 trading days remain, giving **1,001,927 labeled trading days** (1982 to 2017).
 
-# Setup (5 min)
-python -m venv venv
-source venv/bin/activate  # Mac/Linux
-pip install -r requirements.txt
+## Method in brief
 
-# Run Week 1 pipeline (35-60 min)
-python src/utils/data_loader.py      # Load Kaggle dataset
-python src/utils/data_cleaner.py     # Clean data
-python notebooks/01_EDA.py           # Generate visualizations
+- **Features (15, all scale-free):** RSI, Bollinger position and width, 10-day momentum, 20-day volatility, volume ratio, close vs 5/10/20/50-day averages, 5 vs 20 and 20 vs 50-day averages, MACD / signal / histogram as a share of price.
+- **Labels:** forward 5-day return above +3% is Bullish, below -3% is Bearish; otherwise Consolidation if the next 5 days are calm (volatility below 0.8x the current 20-day volatility), else Neutral.
+- **Evaluation:** time-based split (train 1982 to Oct 2015, test Oct 2015 to Nov 2017) with a 10-day gap, compared against a most-common-class baseline.
+
+## Results (test set: 200,555 rows)
+
+| Model | Accuracy | Macro-F1 |
+|---|---|---|
+| Baseline (most common class) | 30.8% | 0.118 |
+| Random Forest | 40.2% | 0.367 |
+| Gradient Boosting | 40.3% | 0.368 |
+
+- **SHAP:** volatility (0.045) and Bollinger band width (0.024) dominate; every other feature is 0.006 or less. Indicators say more about how volatile a period is than about its direction.
+- **Risk tiers:** 286 Low, 83 Medium, 25 High (silhouette 0.41). Average daily volatility 1.81%, 4.13% and 5.07%.
+- **Lesson:** an early run with a random split and raw price features reported 88.9% accuracy. This was data leakage; fixing it (time-based split, scale-free features) gives the honest figures above.
+
+## Project structure
+
 ```
-
-OR run everything at once:
-```bash
-bash week1_pipeline.sh
-```
-
-## Documentation
-
-1. **[START_HERE.md](./START_HERE.md)** ← **Read this first!** (5 min)
-2. **[EXECUTION_GUIDE.md](./EXECUTION_GUIDE.md)** — Step-by-step guide
-3. **[WEEK1_CHECKLIST.md](./WEEK1_CHECKLIST.md)** — Detailed walkthrough
-
-## Directory Structure
-ml-financial-literacy-toolkit/
-├── data/
-│ ├── raw/ # Kaggle dataset (to download)
-│ └── processed/ # Cleaned data (output)
+ML project/
 ├── src/
-│ └── utils/
-│ ├── data_loader.py
-│ └── data_cleaner.py
-├── notebooks/
-│ └── 01_EDA.py # Exploratory Data Analysis
-├── results/
-│ └── visualizations/ # Output: 4 PNG files
-└── requirements.txt
+│   ├── utils/
+│   │   ├── data_loader.py          # load Kaggle .txt files
+│   │   ├── data_cleaner.py         # filter and validate stocks
+│   │   └── feature_engineering.py  # technical indicators
+│   └── models/
+│       ├── pattern_labeling.py     # forward-looking labels
+│       └── train_eval_v2.py        # training, evaluation, SHAP, risk tiers
+├── notebooks/01_EDA.py             # exploratory charts
+├── results/                        # metrics (CSV) and visualizations/
+├── docs/                           # project report (Word) and presentation (PowerPoint)
+├── data/                           # raw and processed data (not tracked by git)
+├── requirements.txt
+└── run_all.ps1                     # runs the whole pipeline
+```
 
+## Setup (Windows, PowerShell)
 
-## Dataset
+```powershell
+python -m venv C:\venvs\mlproject            # keep the venv outside OneDrive
+C:\venvs\mlproject\Scripts\Activate.ps1
+pip install -r requirements.txt
+```
 
-**Source:** Kaggle "Huge Stock Market Dataset"  
-**Size:** ~7000 stocks/ETFs, ~2GB  
-**After cleaning:** 2000+ stocks with 500+ trading days each
+Download the dataset from Kaggle and extract it so the stock files are in `data/raw/stocks/` (files like `aapl.us.txt`), for example:
 
-## Next Steps
+```powershell
+pip install kaggle
+kaggle datasets download -d borismarjanovic/price-volume-data-for-all-us-stocks-etfs -p data/raw --unzip
+```
 
-1. Read **START_HERE.md** (2 min)
-2. Set up Kaggle credentials (see WEEK1_CHECKLIST.md)
-3. Install dependencies and run pipeline
-4. Review visualizations in `results/visualizations/`
+(This needs a Kaggle API token in `~/.kaggle/kaggle.json`.)
 
-**Week 2:** Feature engineering → Model training → SHAP analysis  
-**Week 3:** Evaluation & Phase 1 report
+## Run
+
+```powershell
+.\run_all.ps1
+```
+
+or step by step:
+
+```powershell
+python src/utils/data_loader.py
+python src/utils/data_cleaner.py
+python src/utils/feature_engineering.py
+python src/models/pattern_labeling.py
+python src/models/train_eval_v2.py
+```
+
+Outputs: `results/v2_classification_summary.csv`, `results/v2_feature_importance.csv`, `results/v2_risk_tiers.csv`, and charts in `results/visualizations/`. Intermediate `.pkl` files are written to `data/processed/` and are not tracked by git.
+
+## Limitations
+
+394 of several thousand stocks; a single test period (2015 to 2017); untuned label thresholds; volatility is partly built into the labels; risk tiers not validated against external measures; no trading costs or strategy.
+
+## Author
+
+Divya Ohri, B.Tech CSE, Machine Learning course project.
