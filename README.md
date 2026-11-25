@@ -32,6 +32,7 @@ An educational toolkit that uses **classical machine learning** on historical US
 
 - **SHAP:** volatility (0.045) and Bollinger band width (0.024) dominate; every other feature is 0.006 or less. Indicators say more about how volatile a period is than about its direction.
 - **Risk tiers:** 286 Low, 83 Medium, 25 High (silhouette 0.41). Average daily volatility 1.81%, 4.13% and 5.07%.
+- **Robustness checks** (`robustness_checks.py`): the models beat the baseline in all four walk-forward test periods (average accuracy 38.8% vs 30.0%); two volatility features alone reach 38.1% (all 15: 40.1%); the SHAP ranking is stable on a larger sample; the Low-risk tier stays calm over time, but Medium and High tiers are not reliably ordered (55% of stocks keep their tier when re-clustered).
 - **Lesson:** an early run with a random split and raw price features reported 88.9% accuracy. This was data leakage; fixing it (time-based split, scale-free features) gives the honest figures above.
 
 ## Project structure
@@ -45,7 +46,9 @@ ML project/
 │   │   └── feature_engineering.py  # technical indicators
 │   └── models/
 │       ├── pattern_labeling.py     # forward-looking labels
-│       └── train_eval_v2.py        # training, evaluation, SHAP, risk tiers
+│       ├── train_eval_v2.py        # training, evaluation, SHAP, risk tiers
+│       ├── robustness_checks.py    # walk-forward, ablation, tier stability, SHAP repeat
+│       └── demo.py                 # live demo: one stock, one day
 ├── notebooks/01_EDA.py             # exploratory charts
 ├── results/                        # metrics (CSV) and visualizations/
 ├── docs/                           # project report (Word) and presentation (PowerPoint)
@@ -85,13 +88,15 @@ python src/utils/data_cleaner.py
 python src/utils/feature_engineering.py
 python src/models/pattern_labeling.py
 python src/models/train_eval_v2.py
+python src/models/robustness_checks.py   # optional extra checks (about 10 min)
+python src/models/demo.py                # live demo
 ```
 
 Outputs: `results/v2_classification_summary.csv`, `results/v2_feature_importance.csv`, `results/v2_risk_tiers.csv`, and charts in `results/visualizations/`. Intermediate `.pkl` files are written to `data/processed/` and are not tracked by git.
 
 ## Limitations
 
-394 of several thousand stocks; a single test period (2015 to 2017); untuned label thresholds; volatility is partly built into the labels; risk tiers not validated against external measures; no trading costs or strategy.
+394 of several thousand stocks; test periods all within 2009 to 2017; untuned label thresholds; volatility is partly built into the labels; Medium and High risk tiers are unstable over time; no trading costs or strategy.
 
 ## Author
 
